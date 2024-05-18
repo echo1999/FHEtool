@@ -1,0 +1,74 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license.
+
+cmake_minimum_required(VERSION 3.13)
+
+project(SEALExamples VERSION 4.1.1 LANGUAGES CXX)
+
+# If not called from root CMakeLists.txt
+if(NOT DEFINED SEAL_BUILD_EXAMPLES)
+    set(SEAL_BUILD_EXAMPLES ON)
+
+    # Import Microsoft SEAL
+    find_package(SEAL 4.1.1 EXACT REQUIRED)
+
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+endif()
+
+if(SEAL_BUILD_EXAMPLES)
+
+
+    # 新增python
+    find_package(PythonLibs 3.6)
+    include_directories(
+        # ${PYTHON_INCLUDE_DIRS}
+        ${PYTHON3.6_INCLUDE_DIRS}
+    )
+
+    add_executable(sealexamples)
+
+    # 添加相关库文件链接到工程
+    target_include_directories(sealexamples PRIVATE ${PYTHON3_INCLUDE_DIRS})
+    target_link_libraries(sealexamples PRIVATE
+            # ${PYTHON_LIBRARIES}
+            ${PYTHON_LIBRARIES}
+    )
+
+    
+
+    target_sources(sealexamples
+        PRIVATE
+            ${CMAKE_CURRENT_LIST_DIR}/examples.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/1_bfv_basics.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/2_encoders.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/3_levels.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/4_bgv_basics.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/5_ckks_basics.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/6_rotation.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/7_serialization.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/8_performance.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/myckks.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/mybfv.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/mybgv.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/bgv_mul.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/bfv_mul.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/ckks_mul.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/bgv_mul_v2.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/bfv_mul_v2.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/ckks_mul_v2.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/ckks_business.cpp
+            # ${CMAKE_CURRENT_LIST_DIR}/bgv_business.cpp
+            ${CMAKE_CURRENT_LIST_DIR}/bgv_serve.cpp
+
+    )
+
+    if(TARGET SEAL::seal)
+        target_link_libraries(sealexamples PRIVATE SEAL::seal)
+    elseif(TARGET SEAL::seal_shared)
+        target_link_libraries(sealexamples PRIVATE SEAL::seal_shared)
+    else()
+        message(FATAL_ERROR "Cannot find target SEAL::seal or SEAL::seal_shared")
+    endif()
+
+
+endif()
